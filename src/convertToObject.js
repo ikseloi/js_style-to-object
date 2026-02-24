@@ -14,14 +14,14 @@ function convertToObject(sourceString) {
   // Обробити завершені декларації в кінці (рядки з ';')
   const lines = splitLinesAndTrimEnd(sourceString);
   const css = {};
-  let buffer = '';
+  let result = '';
 
-  for (const part of lines) {
-    buffer = processBuffer(part, buffer, css);
-  }
+  result = lines.reduce((buffer, part) => {
+    return processBuffer(part, buffer, css);
+  }, '');
 
   // Обробити незавершені декларації в кінці (рядок без ';')
-  const remainder = buffer.trim();
+  const remainder = result.trim();
 
   if (remainder) {
     const parsed = parseDeclaration(remainder);
@@ -84,11 +84,12 @@ function extractCompleteDeclarations(bufferCopy) {
   return { declarations, remainder };
 }
 
-function applyDeclarations(css, parsedArray) {
-  // parsedArray — масив об'єктів {key, value}
-  for (const p of parsedArray) {
-    css[p.key] = p.value;
-  }
+function applyDeclarations(css, declarations) {
+  return declarations.reduce((acc, p) => {
+    acc[p.key] = p.value;
+
+    return acc;
+  }, css);
 }
 
 // отримати "key: value" (без кінцевого ';') і повернути {key, value} або null
