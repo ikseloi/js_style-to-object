@@ -84,8 +84,8 @@ function extractCompleteDeclarations(bufferCopy) {
   return { declarations, remainder };
 }
 
-function applyDeclarations(css, parsedArray) {
-  parsedArray.forEach((p) => {
+function applyDeclarations(css, declarations) {
+  declarations.forEach((p) => {
     css[p.key] = p.value;
   });
 }
